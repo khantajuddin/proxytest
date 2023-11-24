@@ -3,7 +3,13 @@ export const config = {
 };
 
 export default async function handler(req) {
-  const url = req.url;
+   const urlQueryParam = req.url.includes('?') ? new URL(req.url).searchParams.get('url') : null;
+
+  if (!urlQueryParam) {
+    return Response.json({ status: 'error', message: 'Missing "url" query parameter', location: req.headers.get('x-vercel-ip-city') || 'world' });
+  }
+
+  const url = decodeURIComponent(urlQueryParam);
 
   try {
     const response = await fetch(url);
