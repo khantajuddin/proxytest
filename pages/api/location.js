@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 export const config = {
   'runtime': 'edge'
 };
@@ -22,9 +20,9 @@ export default async function handler(req) {
   const url = decodeURIComponent(urlQueryParam);
 
   try {
-    const response = await axios.get(url);
+    const response = await fetch(url, { redirect: 'manual' });
 
-    return new Response(JSON.stringify({ status: response.status }), {
+    return new Response(JSON.stringify({ status: response.status, redirected: response.redirected }), {
       status: response.status,
       headers: {
         'Content-Type': 'application/json',
