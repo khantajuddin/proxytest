@@ -22,6 +22,7 @@ export default async function handler(req) {
   try {
     const response = await fetch(url);
       return new Response(JSON.stringify({ status: response.status }), {
+        status:  response.status,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
