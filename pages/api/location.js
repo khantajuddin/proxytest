@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const config = {
   'runtime': 'edge'
 };
@@ -20,7 +22,8 @@ export default async function handler(req) {
   const url = decodeURIComponent(urlQueryParam);
 
   try {
-    const response = await fetch(url);
+    const response = await axios.get(url);
+
     return new Response(JSON.stringify({ status: response.status }), {
       status: response.status,
       headers: {
@@ -30,9 +33,8 @@ export default async function handler(req) {
       },
     });
   } catch (error) {
-    // Fetch error
-    return new Response(JSON.stringify({ status: 'error' }), {
-      status: error,
+    return new Response(JSON.stringify({ status: 'error', message: error.message }), {
+      status: 500, // or choose an appropriate status code
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
