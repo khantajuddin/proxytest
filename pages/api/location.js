@@ -7,9 +7,10 @@ export default async function handler(req) {
 
   try {
     const response = await fetch(url);
-    return Response.json({ response });
+
     if (response.ok) {
       // URL is valid
+      return Response.json({sta: [response.status, response.ok, response]})
       return Response.json({ status: 'valid', location: req.headers.get('x-vercel-ip-city') || 'world' });
     } else if (response.status === 404) {
       // URL is broken (returns a 404 status)
