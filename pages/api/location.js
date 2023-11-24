@@ -43,7 +43,7 @@ export default async function handler(req) {
     } else if (response.redirected) {
       // URL is redirected
       return new Response(JSON.stringify({ status: 'redirected', location: req.headers.get('x-vercel-ip-city') || 'world' }), {
-        status:  403,
+        status:  307,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
