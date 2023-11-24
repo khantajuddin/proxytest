@@ -21,16 +21,11 @@ export default async function handler(req) {
 
   try {
     const response = await fetch(url);
-      return new Response(JSON.stringify({ status: response.status }), {
-        status:  response.status,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-      });
+    
     if (response.ok) {
       // URL is valid
       return new Response(JSON.stringify({ status: 'valid', location: req.headers.get('x-vercel-ip-city') || 'world' }), {
+        status:  200,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
@@ -39,6 +34,7 @@ export default async function handler(req) {
     } else if (response.status === 404) {
       // URL is broken (returns a 404 status)
       return new Response(JSON.stringify({ status: 'broken', location: req.headers.get('x-vercel-ip-city') || 'world' }), {
+        status:  404,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
@@ -47,6 +43,7 @@ export default async function handler(req) {
     } else if (response.redirected) {
       // URL is redirected
       return new Response(JSON.stringify({ status: 'redirected', location: req.headers.get('x-vercel-ip-city') || 'world' }), {
+        status:  403,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
@@ -55,6 +52,7 @@ export default async function handler(req) {
     } else {
       // Other error
       return new Response(JSON.stringify({ status: 'error', location: req.headers.get('x-vercel-ip-city') || 'world' }), {
+        status:  404,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
@@ -64,6 +62,7 @@ export default async function handler(req) {
   } catch (error) {
     // Fetch error
     return new Response(JSON.stringify({ status: 'error', location: req.headers.get('x-vercel-ip-city') || 'world', error: error.message }), {
+      status:  400,
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
