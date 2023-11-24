@@ -21,7 +21,12 @@ export default async function handler(req) {
 
   try {
     const response = await fetch(url);
-
+      return new Response(JSON.stringify({ status: response.status }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
     if (response.ok) {
       // URL is valid
       return new Response(JSON.stringify({ status: 'valid', location: req.headers.get('x-vercel-ip-city') || 'world' }), {
