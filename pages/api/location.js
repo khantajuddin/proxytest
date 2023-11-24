@@ -3,10 +3,18 @@ export const config = {
 };
 
 export default async function handler(req) {
-   const urlQueryParam = req.url.includes('?') ? new URL(req.url).searchParams.get('url') : null;
+  const urlQueryParam = req.url.includes('?') ? new URL(req.url).searchParams.get('url') : null;
 
   if (!urlQueryParam) {
-    return Response.json({ status: 'error', message: 'Missing "url" query parameter', location: req.headers.get('x-vercel-ip-city') || 'world' });
+    return new Response(JSON.stringify({ status: 'error', message: 'Missing "url" query parameter', location: req.headers.get('x-vercel-ip-city') || 'world' }), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'OPTIONS, GET, POST, PUT, PATCH, DELETE',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Max-Age': '86400',
+      },
+    });
   }
 
   const url = decodeURIComponent(urlQueryParam);
@@ -16,19 +24,44 @@ export default async function handler(req) {
 
     if (response.ok) {
       // URL is valid
-      return Response.json({ status: 'valid', location: req.headers.get('x-vercel-ip-city') || 'world' });
+      return new Response(JSON.stringify({ status: 'valid', location: req.headers.get('x-vercel-ip-city') || 'world' }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
     } else if (response.status === 404) {
       // URL is broken (returns a 404 status)
-      return Response.json({ status: 'broken', location: req.headers.get('x-vercel-ip-city') || 'world' });
+      return new Response(JSON.stringify({ status: 'broken', location: req.headers.get('x-vercel-ip-city') || 'world' }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
     } else if (response.redirected) {
       // URL is redirected
-      return Response.json({ status: 'redirected', location: req.headers.get('x-vercel-ip-city') || 'world' });
+      return new Response(JSON.stringify({ status: 'redirected', location: req.headers.get('x-vercel-ip-city') || 'world' }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
     } else {
       // Other error
-      return Response.json({ status: 'error', location: req.headers.get('x-vercel-ip-city') || 'world' });
+      return new Response(JSON.stringify({ status: 'error', location: req.headers.get('x-vercel-ip-city') || 'world' }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
     }
   } catch (error) {
     // Fetch error
-    return Response.json({ status: 'error', location: req.headers.get('x-vercel-ip-city') || 'world', error: error.message });
+    return new Response(JSON.stringify({ status: 'error', location: req.headers.get('x-vercel-ip-city') || 'world', error: error.message }), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
   }
 }
