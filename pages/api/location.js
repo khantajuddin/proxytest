@@ -22,14 +22,28 @@ export default async function handler(req) {
   try {
     const response = await fetch(url, { redirect: 'manual' });
 
-    return new Response(JSON.stringify({ status: response.status, redirected: response.redirected }), {
-      status: response.status,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Expose-Headers': '*',
-      },
-    });
+    if (response.status >= 300 && response.status < 400 && response.headers.has('Location')) {
+      // Handle redirect and return the target URL
+      const targetUrl = response.headers.get('Location');
+      return new Response(JSON.stringify({ status: response.status, redirected: true, targetUrl }), {
+        status: response.status,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Expose-Headers': '*',
+        },
+      });
+    } else {
+      // No redirect, return the original response
+      return new Response(JSON.stringify({ status: response.status, redirected: false }), {
+        status: response.status,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Expose-Headers': '*',
+        },
+      });
+    }
   } catch (error) {
     return new Response(JSON.stringify({ status: 'error', message: error.message }), {
       status: 500, // or choose an appropriate status code
