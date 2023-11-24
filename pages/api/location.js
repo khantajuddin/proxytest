@@ -7,7 +7,7 @@ export default async function handler(req) {
 
   try {
     const response = await fetch(url);
-
+    return Response.json({ response });
     if (response.ok) {
       // URL is valid
       return Response.json({ status: 'valid', location: req.headers.get('x-vercel-ip-city') || 'world' });
